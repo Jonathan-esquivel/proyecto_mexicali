@@ -1,15 +1,52 @@
-import { useState } from 'react'
 import './App.css'
 import MapView from './MapView'
+import { useState, useEffect } from 'react'
 
 function App() {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
   const [mapCenter, setMapCenter] = useState([32.5149, -117.0382]) // initial Tijuana coords
   const [showPanel, setShowPanel] = useState(false)
+  const [viviendas, setViviendas] = useState([])
 
-  const handleLocationSelect = (lat, lon) => {
+const [formData, setFormData] = useState({
+    direccion: '',
+    estado: 'Vandalizada',
+    latitud: 0,
+    longitud: 0
+  })
+
+  const cargarViviendas = async () => {
+    try {
+      const response = await fetch('http://127.0.0.1:8000/viviendas')
+      const data = await response.json()
+      setViviendas(data)
+    } catch (error) {
+      console.error("Error al cargar viviendas:", error)
+    }
+  }
+
+  useEffect(() => {
+    cargarViviendas()
+  }, [])
+
+  const handleLocationSelect = (lat, lon, viviendaExistente = null) => {
     setMapCenter([lat, lon])
+    if (viviendaExistente) {
+      setFormData({
+        direccion: viviendaExistente.direccion,
+        estado: viviendaExistente.estado,
+        latitud: viviendaExistente.latitud,
+        longitud: viviendaExistente.longitud
+      })
+    } else {
+      setFormData({
+        ...formData,
+        latitud: lat,
+        longitud: lon,
+        direccion: '' 
+      })
+    }
     setShowPanel(true)
   }
 
@@ -29,6 +66,37 @@ function App() {
       }
     }
   }
+
+  const handleSave = async () => {
+    if (!formData.direccion) {
+      alert("Por favor escribe una dirección");
+      return;
+    }
+    try {
+      const response = await fetch('http://127.0.0.1:8000/viviendas', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData)
+      })
+
+      if (response.ok) {
+        alert("Vivienda guardada correctamente")
+        cargarViviendas() 
+        setShowPanel(false)
+      } else {
+        alert("Error al guardar la vivienda")
+      }
+    } catch (error) {
+      console.error("Error en la petición:", error)
+    }
+  }
+
+  useEffect(() => {
+    fetch('http://127.0.0.1:8000/viviendas')
+      .then(response => response.json())
+      .then(data => setViviendas(data))
+      .catch(error => console.error("Error al cargar viviendas:", error));
+  }, []);
 
   return (
     <div className="app-container">
@@ -59,44 +127,33 @@ function App() {
             />
           </div>
           <div className="map-wrapper">
-            <MapView center={mapCenter} onMapClick={handleLocationSelect} />
+            <MapView center={mapCenter} onMapClick={handleLocationSelect} viviendas={viviendas} />
           </div>
         </div>
 
         <div className={`side-panel ${showPanel ? 'open' : ''}`}>
           <button className="close-panel-btn" onClick={() => setShowPanel(false)}>✕</button>
           <div className="panel-content">
-            <div className="image-placeholder">
-              <span>Imagen (Template)</span>
-            </div>
+            <h3>Detalles de la Vivienda</h3>
+    
             <div className="info-group">
-              <strong>NOMBRE UBICACION</strong>
-              <p>Descripcion</p>
+              <strong>Dirección</strong>
+              <p>{formData.direccion || "Sin dirección"}</p>
             </div>
+
             <div className="info-group">
-              <strong>Telefono</strong>
-              <p>Descripcion</p>
+              <strong>Estatus</strong>
+              <p>{formData.estado}</p>
             </div>
+
             <div className="info-group">
-              <strong>Direccion</strong>
-              <p>Descripcion</p>
+              <strong>Coordenadas</strong>
+              <p>{formData.latitud.toFixed(5)}, {formData.longitud.toFixed(5)}</p>
             </div>
-            <div className="info-group">
-              <strong>Status de Vivienda</strong>
-              <p>Descripcion</p>
-            </div>
-            <div className="info-group">
-              <strong>Coordenada Longitud</strong>
-              <p>{mapCenter[1].toFixed(5)}</p>
-            </div>
-            <div className="info-group">
-              <strong>Coordenada Latitud</strong>
-              <p>{mapCenter[0].toFixed(5)}</p>
-            </div>
-            <div className="info-group">
-              <strong>Observaciones</strong>
-              <textarea className="observations-box" placeholder="..."></textarea>
-            </div>
+
+            <button onClick={handleSave} style={{marginTop: '10px'}}>
+              Guardar en Base de Datos
+            </button>
           </div>
         </div>
       </main>

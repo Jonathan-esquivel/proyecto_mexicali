@@ -1,0 +1,7 @@
+sqlalchemy
+pydantic
+streamlit
+folium
+streamlit-folium
+python-dotenv
+psycopg2-binary

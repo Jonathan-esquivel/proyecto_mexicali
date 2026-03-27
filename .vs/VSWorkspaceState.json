@@ -1,0 +1,12 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\backend",
+    "\\env",
+    "\\frontend",
+    "\\frontend\\mapa-frontend",
+    "\\frontend\\mapa-frontend\\src"
+  ],
+  "SelectedNode": "\\backend\\crud.py",
+  "PreviewInSolutionExplorer": false
+}
