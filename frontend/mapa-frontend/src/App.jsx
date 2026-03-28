@@ -1,15 +1,25 @@
 import { useState } from 'react'
 import './App.css'
 import MapView from './MapView'
+import viviendasData from './viviendas.json'
+
 
 function App() {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
-  const [mapCenter, setMapCenter] = useState([32.5149, -117.0382]) // initial Tijuana coords
+  const [mapCenter, setMapCenter] = useState([32.62391, -115.45279]) // initial Mexicali coords
   const [showPanel, setShowPanel] = useState(false)
+  const [selectedVivienda, setSelectedVivienda] = useState(null)
 
   const handleLocationSelect = (lat, lon) => {
     setMapCenter([lat, lon])
+    setSelectedVivienda(null)
+    setShowPanel(true)
+  }
+
+  const handleMarkerClick = (vivienda) => {
+    setMapCenter([vivienda.latitud, vivienda.longitud])
+    setSelectedVivienda(vivienda)
     setShowPanel(true)
   }
 
@@ -59,7 +69,12 @@ function App() {
             />
           </div>
           <div className="map-wrapper">
-            <MapView center={mapCenter} onMapClick={handleLocationSelect} />
+            <MapView
+              center={mapCenter}
+              onMapClick={handleLocationSelect}
+              viviendas={viviendasData}
+              onMarkerClick={handleMarkerClick}
+            />
           </div>
         </div>
 
@@ -69,22 +84,45 @@ function App() {
             <div className="image-placeholder">
               <span>Imagen (Template)</span>
             </div>
-            <div className="info-group">
-              <strong>NOMBRE UBICACION</strong>
-              <p>Descripcion</p>
-            </div>
-            <div className="info-group">
-              <strong>Telefono</strong>
-              <p>Descripcion</p>
-            </div>
-            <div className="info-group">
-              <strong>Direccion</strong>
-              <p>Descripcion</p>
-            </div>
-            <div className="info-group">
-              <strong>Status de Vivienda</strong>
-              <p>Descripcion</p>
-            </div>
+            {selectedVivienda ? (
+              <>
+                <div className="info-group">
+                  <strong>DIRECCIÓN</strong>
+                  <p>{selectedVivienda.direccion}</p>
+                </div>
+                <div className="info-group">
+                  <strong>Status de Vivienda</strong>
+                  <p>{selectedVivienda.estado}</p>
+                </div>
+                <div className="info-group">
+                  <strong>Fecha de Registro</strong>
+                  <p>{new Date(selectedVivienda.fecha_registro).toLocaleString()}</p>
+                </div>
+                <div className="info-group">
+                  <strong>ID</strong>
+                  <p>{selectedVivienda.id}</p>
+                </div>
+              </>
+            ) : (
+              <>
+                <div className="info-group">
+                  <strong>NOMBRE UBICACION</strong>
+                  <p>Descripcion</p>
+                </div>
+                <div className="info-group">
+                  <strong>Telefono</strong>
+                  <p>Descripcion</p>
+                </div>
+                <div className="info-group">
+                  <strong>Direccion</strong>
+                  <p>Descripcion</p>
+                </div>
+                <div className="info-group">
+                  <strong>Status de Vivienda</strong>
+                  <p>Descripcion</p>
+                </div>
+              </>
+            )}
             <div className="info-group">
               <strong>Coordenada Longitud</strong>
               <p>{mapCenter[1].toFixed(5)}</p>
