@@ -1,18 +1,33 @@
 import { useState } from 'react'
 import './App.css'
 import MapView from './MapView'
+
 import { useTheme } from './useTheme'
 import AccessibilityButton from './AccessibilityButton'
+
+import viviendasData from './viviendas.json'
 
 function App() {
   const { isDarkMode, toggleTheme } = useTheme()
   const [isSettingsOpen, setIsSettingsOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
-  const [mapCenter, setMapCenter] = useState([32.5149, -117.0382]) // initial Tijuana coords
+  const [mapCenter, setMapCenter] = useState([32.62391, -115.45279]) // initial Mexicali coords
   const [showPanel, setShowPanel] = useState(false)
+  const [selectedVivienda, setSelectedVivienda] = useState(null)
+  // Nuevo estado para controlar si estamos reportando una vivienda nueva
+  const [isReporting, setIsReporting] = useState(false)s
 
   const handleLocationSelect = (lat, lon) => {
     setMapCenter([lat, lon])
+    setSelectedVivienda(null)
+    setIsReporting(true) // Al seleccionar ubicación nueva, activamos modo reporte
+    setShowPanel(true)
+  }
+
+  const handleMarkerClick = (vivienda) => {
+    setMapCenter([vivienda.latitud, vivienda.longitud])
+    setSelectedVivienda(vivienda)
+    setIsReporting(false) // Al hacer click en marcador existente, es modo vista
     setShowPanel(true)
   }
 
@@ -40,7 +55,9 @@ function App() {
           <h2>LOGO</h2>
         </div>
         <div className="nav-section">
-          <button className="nav-button" onClick={() => setShowPanel(false)}>Inicio</button>
+          <button className="nav-button" onClick={() => { setShowPanel(false); setIsReporting(false); }}>Inicio</button>
+          {/* Botón para abrir el slide de registro manualmente */}
+          <button className="nav-button" style={{ marginLeft: '10px', backgroundColor: '#3498db', color: 'white' }} onClick={() => { setIsReporting(true); setSelectedVivienda(null); setShowPanel(true); }}>Reportar Vivienda</button>
         </div>
         <div className="settings-section">
           <svg onClick={() => setIsSettingsOpen(true)} viewBox="0 0 24 24" width="34" height="34" fill="currentColor" className="gear-icon">
@@ -62,7 +79,12 @@ function App() {
             />
           </div>
           <div className="map-wrapper">
-            <MapView center={mapCenter} onMapClick={handleLocationSelect} />
+            <MapView
+              center={mapCenter}
+              onMapClick={handleLocationSelect}
+              viviendas={viviendasData}
+              onMarkerClick={handleMarkerClick}
+            />
           </div>
         </div>
 
@@ -70,24 +92,74 @@ function App() {
           <button className="close-panel-btn" onClick={() => setShowPanel(false)}>✕</button>
           <div className="panel-content">
             <div className="image-placeholder">
-              <span>Imagen (Template)</span>
+              <span>{isReporting ? 'Subir Foto Vivienda' : 'Imagen (Template)'}</span>
             </div>
-            <div className="info-group">
-              <strong>NOMBRE UBICACION</strong>
-              <p>Descripcion</p>
-            </div>
-            <div className="info-group">
-              <strong>Telefono</strong>
-              <p>Descripcion</p>
-            </div>
-            <div className="info-group">
-              <strong>Direccion</strong>
-              <p>Descripcion</p>
-            </div>
-            <div className="info-group">
-              <strong>Status de Vivienda</strong>
-              <p>Descripcion</p>
-            </div>
+            
+            {/* Lógica condicional: Si isReporting es true, muestra campos vacíos para llenar */}
+            {isReporting ? (
+              <>
+                <div className="info-group">
+                  <strong>DIRECCIÓN</strong>
+                  <input type="text" className="form-input" placeholder="Ingrese dirección..." />
+                </div>
+                <div className="info-group">
+                  <strong>Status de Vivienda</strong>
+                  <select className="form-input">
+                    <option value="abandonada">Abandonada</option>
+                    <option value="vandalizada">Vandalizada</option>
+                    <option value="deshabitada">Deshabitada</option>
+                  </select>
+                </div>
+                <div className="info-group">
+                  <strong>Fecha de Registro</strong>
+                  <p>{new Date().toLocaleDateString()}</p>
+                </div>
+                <div className="info-group">
+                  <strong>ID</strong>
+                  <p>Auto-generado</p>
+                </div>
+                <button className="save-button" onClick={() => alert("Registro Guardado")}>Guardar Registro</button>
+              </>
+            ) : selectedVivienda ? (
+              <>
+                <div className="info-group">
+                  <strong>DIRECCIÓN</strong>
+                  <p>{selectedVivienda.direccion}</p>
+                </div>
+                <div className="info-group">
+                  <strong>Status de Vivienda</strong>
+                  <p>{selectedVivienda.estado}</p>
+                </div>
+                <div className="info-group">
+                  <strong>Fecha de Registro</strong>
+                  <p>{new Date(selectedVivienda.fecha_registro).toLocaleString()}</p>
+                </div>
+                <div className="info-group">
+                  <strong>ID</strong>
+                  <p>{selectedVivienda.id}</p>
+                </div>
+              </>
+            ) : (
+              <>
+                <div className="info-group">
+                  <strong>NOMBRE UBICACION</strong>
+                  <p>Descripcion</p>
+                </div>
+                <div className="info-group">
+                  <strong>Telefono</strong>
+                  <p>Descripcion</p>
+                </div>
+                <div className="info-group">
+                  <strong>Direccion</strong>
+                  <p>Descripcion</p>
+                </div>
+                <div className="info-group">
+                  <strong>Status de Vivienda</strong>
+                  <p>Descripcion</p>
+                </div>
+              </>
+            )}
+
             <div className="info-group">
               <strong>Coordenada Longitud</strong>
               <p>{mapCenter[1].toFixed(5)}</p>
@@ -98,7 +170,7 @@ function App() {
             </div>
             <div className="info-group">
               <strong>Observaciones</strong>
-              <textarea className="observations-box" placeholder="..."></textarea>
+              <textarea className="observations-box" placeholder="Añada comentarios sobre el estado..."></textarea>
             </div>
           </div>
         </div>

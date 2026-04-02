@@ -1,0 +1,82 @@
+[
+  {
+    "id": 1,
+    "direccion": "Av. Reforma y Calle B, Centro",
+    "latitud": 32.6642,
+    "longitud": -115.4842,
+    "estado": "Vandalizada",
+    "fecha_registro": "2026-03-13 21:03:38.991815"
+  },
+  {
+    "id": 2,
+    "direccion": "Colonia Nueva, Calle I",
+    "latitud": 32.659,
+    "longitud": -115.467,
+    "estado": "Vandalizada",
+    "fecha_registro": "2026-03-13 21:03:38.991819"
+  },
+  {
+    "id": 3,
+    "direccion": "Fracc. Los Pinos, Av. de los Pinos",
+    "latitud": 32.645,
+    "longitud": -115.442,
+    "estado": "Vandalizada",
+    "fecha_registro": "2026-03-13 21:03:38.991821"
+  },
+  {
+    "id": 4,
+    "direccion": "Col. Industrial, Calle F",
+    "latitud": 32.652,
+    "longitud": -115.478,
+    "estado": "Vandalizada",
+    "fecha_registro": "2026-03-13 21:03:38.991822"
+  },
+  {
+    "id": 5,
+    "direccion": "Blvd. Anáhuac, Prohogar",
+    "latitud": 32.635,
+    "longitud": -115.46,
+    "estado": "Vandalizada",
+    "fecha_registro": "2026-03-13 21:03:38.991823"
+  },
+  {
+    "id": 6,
+    "direccion": "Av. Madero, Segunda Sección",
+    "latitud": 32.666,
+    "longitud": -115.489,
+    "estado": "Vandalizada",
+    "fecha_registro": "2026-03-13 21:03:38.991824"
+  },
+  {
+    "id": 7,
+    "direccion": "Fracc. Montecarlo",
+    "latitud": 32.62,
+    "longitud": -115.39,
+    "estado": "Vandalizada",
+    "fecha_registro": "2026-03-13 21:03:38.991826"
+  },
+  {
+    "id": 8,
+    "direccion": "Col. Carbajal, Av. 16 de Septiembre",
+    "latitud": 32.615,
+    "longitud": -115.45,
+    "estado": "Vandalizada",
+    "fecha_registro": "2026-03-13 21:03:38.991827"
+  },
+  {
+    "id": 9,
+    "direccion": "González Ortega (Palaco)",
+    "latitud": 32.605,
+    "longitud": -115.37,
+    "estado": "Vandalizada",
+    "fecha_registro": "2026-03-13 21:03:38.991828"
+  },
+  {
+    "id": 10,
+    "direccion": "Valle de Puebla, Calle Casa Blanca",
+    "latitud": 32.58,
+    "longitud": -115.32,
+    "estado": "Vandalizada",
+    "fecha_registro": "2026-03-13 21:03:38.991829"
+  }
+]
