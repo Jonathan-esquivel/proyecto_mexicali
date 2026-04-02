@@ -1,8 +1,11 @@
 import { useState } from 'react'
 import './App.css'
 import MapView from './MapView'
+import { useTheme } from './useTheme'
+import AccessibilityButton from './AccessibilityButton'
 
 function App() {
+  const { isDarkMode, toggleTheme } = useTheme()
   const [isSettingsOpen, setIsSettingsOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
   const [mapCenter, setMapCenter] = useState([32.5149, -117.0382]) // initial Tijuana coords
@@ -110,6 +113,7 @@ function App() {
           </div>
         </div>
       )}
+      <AccessibilityButton isDarkMode={isDarkMode} onToggle={toggleTheme} />
     </div>
   )
 }
