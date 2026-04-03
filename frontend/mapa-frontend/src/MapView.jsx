@@ -30,7 +30,7 @@ function MapClickHandler({ onMapClick }) {
   return null
 }
 
-export default function MapView({ center = [32.5149, -117.0382], onMapClick, viviendas = [] }) {
+export default function MapView({ center = [32.62391, -115.45279], onMapClick, viviendas = [], onMarkerClick }) {
   return (
     <MapContainer center={center} zoom={13} style={{ height: '100%', width: '100%' }}>
       <ChangeView center={center} zoom={15} />
@@ -39,7 +39,17 @@ export default function MapView({ center = [32.5149, -117.0382], onMapClick, viv
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
-      
+      {viviendas.map((vivienda) => (
+        <Marker
+          key={vivienda.id}
+          position={[vivienda.latitud, vivienda.longitud]}
+          eventHandlers={{
+            click: () => {
+              if (onMarkerClick) onMarkerClick(vivienda)
+            }
+          }}
+        />
+      ))}
       <Marker position={center} />
 
       {viviendas.map((v) => (
