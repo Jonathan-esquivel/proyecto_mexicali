@@ -14,8 +14,9 @@ function App() {
   const [mapCenter, setMapCenter] = useState([32.62391, -115.45279]) // initial Mexicali coords
   const [showPanel, setShowPanel] = useState(false)
   const [selectedVivienda, setSelectedVivienda] = useState(null)
+  const [viviendas, setViviendas] = useState([])
   // Nuevo estado para controlar si estamos reportando una vivienda nueva
-  const [isReporting, setIsReporting] = useState(false)s
+  const [isReporting, setIsReporting] = useState(false)
 
 const [formData, setFormData] = useState({
     direccion: '',
@@ -41,6 +42,11 @@ const [formData, setFormData] = useState({
   const handleLocationSelect = (lat, lon, viviendaExistente = null) => {
     setMapCenter([lat, lon])
     setSelectedVivienda(null)
+    setFormData(prev => ({
+      ...prev,
+      latitud: lat,
+      longitud: lon
+    }))
     setIsReporting(true) // Al seleccionar ubicación nueva, activamos modo reporte
     setShowPanel(true)
   }
@@ -134,7 +140,7 @@ const [formData, setFormData] = useState({
             <MapView
               center={mapCenter}
               onMapClick={handleLocationSelect}
-              viviendas={viviendasData}
+              viviendas={viviendas}
               onMarkerClick={handleMarkerClick}
             />
           </div>
@@ -152,14 +158,14 @@ const [formData, setFormData] = useState({
               <>
                 <div className="info-group">
                   <strong>DIRECCIÓN</strong>
-                  <input type="text" className="form-input" placeholder="Ingrese dirección..." />
+                  <input type="text" className="form-input" placeholder="Ingrese dirección..." value={formData.direccion} onChange={(e) => setFormData({...formData, direccion: e.target.value})} />
                 </div>
                 <div className="info-group">
                   <strong>Status de Vivienda</strong>
-                  <select className="form-input">
-                    <option value="abandonada">Abandonada</option>
-                    <option value="vandalizada">Vandalizada</option>
-                    <option value="deshabitada">Deshabitada</option>
+                  <select className="form-input" value={formData.estado} onChange={(e) => setFormData({...formData, estado: e.target.value})}>
+                    <option value="Abandonada">Abandonada</option>
+                    <option value="Vandalizada">Vandalizada</option>
+                    <option value="Deshabitada">Deshabitada</option>
                   </select>
                 </div>
                 <div className="info-group">
@@ -170,7 +176,7 @@ const [formData, setFormData] = useState({
                   <strong>ID</strong>
                   <p>Auto-generado</p>
                 </div>
-                <button className="save-button" onClick={() => alert("Registro Guardado")}>Guardar Registro</button>
+                <button className="save-button" onClick={handleSave}>Guardar Registro</button>
               </>
             ) : selectedVivienda ? (
               <>
