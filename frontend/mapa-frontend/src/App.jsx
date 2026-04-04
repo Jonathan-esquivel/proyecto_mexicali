@@ -14,20 +14,19 @@ function App() {
   const [mapCenter, setMapCenter] = useState([32.62391, -115.45279]) // initial Mexicali coords
   const [showPanel, setShowPanel] = useState(false)
   const [selectedVivienda, setSelectedVivienda] = useState(null)
-  // Nuevo estado para controlar si estamos reportando una vivienda nueva
-  const [isReporting, setIsReporting] = useState(false)s
+  const [isReporting, setIsReporting] = useState(false)
 
   const handleLocationSelect = (lat, lon) => {
     setMapCenter([lat, lon])
     setSelectedVivienda(null)
-    setIsReporting(true) // Al seleccionar ubicación nueva, activamos modo reporte
+    setIsReporting(true)
     setShowPanel(true)
   }
 
   const handleMarkerClick = (vivienda) => {
     setMapCenter([vivienda.latitud, vivienda.longitud])
     setSelectedVivienda(vivienda)
-    setIsReporting(false) // Al hacer click en marcador existente, es modo vista
+    setIsReporting(false)
     setShowPanel(true)
   }
 
@@ -50,13 +49,92 @@ function App() {
 
   return (
     <div className="app-container">
+      {/* Estilos unificados: misma fuente, tamaño y redondeado (12px) */}
+      <style>{`
+        .app-container, 
+        .side-panel, 
+        .form-input, 
+        .save-button, 
+        .nav-button, 
+        .search-bar, 
+        .modal-content, 
+        .info-group,
+        .image-placeholder,
+        textarea, 
+        button, 
+        input, 
+        select, 
+        p, 
+        span {
+          font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif !important;
+          font-size: 14px !important;
+          border-radius: 12px !important;
+        }
+
+        .side-panel h2, .modal-content h2 {
+          font-family: 'Segoe UI', Roboto, sans-serif !important;
+          font-size: 18px !important;
+          font-weight: 600;
+        }
+
+        .info-group {
+          margin-bottom: 15px;
+          padding: 12px;
+          background: rgba(0, 0, 0, 0.03); /* Fondo sutil para las celdas */
+          border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .info-group strong {
+          display: block;
+          margin-bottom: 4px;
+          font-size: 11px !important;
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
+          opacity: 0.7;
+          font-family: 'Segoe UI', sans-serif !important;
+        }
+
+        .form-input, .observations-box {
+          width: 100%;
+          border: 1px solid #ccc;
+          padding: 8px;
+          background: white;
+          color: #333;
+        }
+
+        .save-button {
+          width: 100%;
+          padding: 12px;
+          background-color: #2ecc71;
+          color: white;
+          border: none;
+          cursor: pointer;
+          font-weight: 600;
+          margin-top: 10px;
+        }
+
+        .image-placeholder {
+          width: 100%;
+          height: 160px;
+          background: #e0e0e0;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          margin-bottom: 20px;
+          border: 2px dashed #bbb;
+        }
+
+        .close-panel-btn {
+          border-radius: 50% !important; /* El botón de cerrar es el único circular */
+        }
+      `}</style>
+
       <header className="top-header">
         <div className="logo-section">
           <h2>LOGO</h2>
         </div>
         <div className="nav-section">
           <button className="nav-button" onClick={() => { setShowPanel(false); setIsReporting(false); }}>Inicio</button>
-          {/* Botón para abrir el slide de registro manualmente */}
           <button className="nav-button" style={{ marginLeft: '10px', backgroundColor: '#3498db', color: 'white' }} onClick={() => { setIsReporting(true); setSelectedVivienda(null); setShowPanel(true); }}>Reportar Vivienda</button>
         </div>
         <div className="settings-section">
@@ -95,7 +173,6 @@ function App() {
               <span>{isReporting ? 'Subir Foto Vivienda' : 'Imagen (Template)'}</span>
             </div>
             
-            {/* Lógica condicional: Si isReporting es true, muestra campos vacíos para llenar */}
             {isReporting ? (
               <>
                 <div className="info-group">
@@ -143,19 +220,19 @@ function App() {
               <>
                 <div className="info-group">
                   <strong>NOMBRE UBICACION</strong>
-                  <p>Descripcion</p>
+                  <p>Descripción</p>
                 </div>
                 <div className="info-group">
-                  <strong>Telefono</strong>
-                  <p>Descripcion</p>
+                  <strong>Teléfono</strong>
+                  <p>Descripción</p>
                 </div>
                 <div className="info-group">
-                  <strong>Direccion</strong>
-                  <p>Descripcion</p>
+                  <strong>Dirección</strong>
+                  <p>Descripción</p>
                 </div>
                 <div className="info-group">
                   <strong>Status de Vivienda</strong>
-                  <p>Descripcion</p>
+                  <p>Descripción</p>
                 </div>
               </>
             )}
